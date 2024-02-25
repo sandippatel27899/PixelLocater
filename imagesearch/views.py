@@ -6,6 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import os
 import base64
+from .search import search_similar_images
         
 @login_required(login_url="/auth")
 def index(request):    
@@ -33,28 +34,11 @@ def search_view(request):
         with open(uploaded_image_path, "rb") as image_file:
             base64_uploaded_image = base64.b64encode(image_file.read()).decode("utf-8")
        
-        image_urls = [
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'),
-            (f"/media/images/user_{request.user}/image_2.PNG", 'image_1'),
-            (f"/media/images/user_{request.user}/image_3.PNG", 'image_1'),
-            (f"/media/images/user_{request.user}/image_4.jpg", 'image_1'),
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'),
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'),
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'),
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'),
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'),
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'),
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'), 
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'), 
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'), 
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'), 
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'), 
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'), 
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'), 
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'), 
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'), 
-            (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'), 
-            ] 
+        # image_urls = [
+        #     (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'),
+        #     ] 
+        
+        image_urls = search_similar_images(request.user, uploaded_image_path)
         
         context = {
             'uploaded_image': f"data:image/png;base64,{base64_uploaded_image}",
