@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pixel Locator</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h1 {
+            color: #333;
+        }
+
+        form {
+            margin: 20px auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+        }
+
+        input[type="file"] {
+            display: none;
+        }
+
+        label {
+            display: block;
+            background-color: #4CAF50;
+            color: #fff;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        label:hover {
+            background-color: #45a049;
+        }
+
+        #drop-area {
+            border: 2px dashed #ccc;
+            border-radius: 5px;
+            padding: 20px;
+            text-align: center;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+
+        #drop-area.dragging {
+            border-color: #4CAF50;
+        }
+
+        .logout-btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+
+        .logout-btn:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+
+<body>
+    <h1> Image search </h1>
+
+    <form action="{% url 'search_view' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <label for="file-input">Choose or Drag and Drop Image</label>
+        <input type="file" id="file-input" name="image" accept="image/*" required>
+
+        <div id="drop-area" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"
+            ondrop="handleDrop(event)">
+            <p>Or drag and drop here</p>
+        </div>
+
+        <button type="submit">Search</button>
+    </form>
+
+    <a href="{% url 'auth_logout' %}" class="logout-btn">Logout</a>
+
+    <script>
+        function handleDragOver(event) {
+            event.preventDefault();
+            document.getElementById('drop-area').classList.add('dragging');
+        }
+
+        function handleDragLeave(event) {
+            event.preventDefault();
+            document.getElementById('drop-area').classList.remove('dragging');
+        }
+
+        function handleDrop(event) {
+            event.preventDefault();
+            document.getElementById('drop-area').classList.remove('dragging');
+            const fileInput = document.getElementById('file-input');
+            const files = event.dataTransfer.files;
+
+            if (files.length > 0) {
+                fileInput.files = files;
+            }
+        }
+    </script>
+</body>
+
+</html>
