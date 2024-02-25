@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Search Results</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
+
+        h2 {
+            color: #333;
+        }
+
+        .center-image {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .center-image img {
+            width: 100%;
+            max-width: 600px; /* Set a maximum width for the uploaded image */
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .image-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px;
+        }
+
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .image-caption {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        .center-image img,
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            object-fit: cover; /* Ensures the image covers the entire box */
+        }
+
+        .center-image,
+        .image-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 20px;
+        }
+
+        .image-container {
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px;
+        }
+
+        .image-container img:hover {
+            transform: scale(1.05);
+        }
+
+        .image-caption {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+
+        /* Add this style for a fixed height-width square box */
+        .center-image img,
+        .image-container img {
+            aspect-ratio: 1/1; /* Maintain a 1:1 aspect ratio for a square box */
+            max-height: 200px; /* Set the maximum height */
+        }
+
+        .image-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin: 20px;
+            justify-content: center; /* Center the grid items horizontally */
+        }
+        
+        .image-container img {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s;
+            aspect-ratio: 1/1; /* Maintain a 1:1 aspect ratio for a square box */
+            max-height: 200px; /* Set the maximum height */
+        }
+        
+        .image-container img:hover {
+            transform: scale(1.05);
+        }
+        
+        .image-caption {
+            margin-top: 5px;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        /* Adjust the number of columns for the first row */
+        @media (min-width: 768px) {
+            .image-container {
+                grid-template-columns: repeat(8, 1fr); /* Display 8 images in the first row on larger screens */
+            }
+        }
+        
+    </style>
+</head>
+
+<body>
+    <h2>Uploaded Image</h2>
+
+    {% if uploaded_image %}
+        <div class="center-image">
+            <img src="{{ uploaded_image }}" alt="Uploaded Image">
+        </div>
+    {% endif %}
+
+    <h2>Search Results</h2>
+
+    {% if image_urls %}
+        <div class="image-container">
+            {% for image_url, file_name in image_urls %}
+                <div>
+                    <img src="{{ image_url }}" alt="Result Image">
+                    <p class="image-caption">{{ file_name }}</p>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p>No search results found.</p>
+    {% endif %}
+</body>
+
+</html>
