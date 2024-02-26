@@ -33,12 +33,13 @@ def search_view(request):
 
         with open(uploaded_image_path, "rb") as image_file:
             base64_uploaded_image = base64.b64encode(image_file.read()).decode("utf-8")
-       
+            
         # image_urls = [
         #     (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'),
         #     ] 
         
         image_urls = search_similar_images(request.user, uploaded_image_path)
+        os.remove(uploaded_image_path)
         
         context = {
             'uploaded_image': f"data:image/png;base64,{base64_uploaded_image}",
