@@ -154,7 +154,7 @@
         <div class="image-container">
             {% for image_url, file_name in image_urls %}
                 <div>
-                    <img src="{{ image_url }}" alt="Result Image">
+                    <img src="{{ image_url }}" onerror="showSamplePreview(this)" alt="Result Image">
                     <p class="image-caption">{{ file_name }}</p>
                 </div>
             {% endfor %}
@@ -163,5 +163,12 @@
         <p>No search results found.</p>
     {% endif %}
 </body>
+
+<script>
+    function showSamplePreview(img) {
+        img.onerror = null;  
+        img.src = '/media/images/failed_to_load.png';
+    }
+</script>
 
 </html>

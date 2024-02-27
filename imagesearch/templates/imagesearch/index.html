@@ -78,7 +78,7 @@
 <body>
     <h1> Image search </h1>
 
-    <form action="{% url 'search_view' %}" method="post" enctype="multipart/form-data">
+    <form id="imageForm" action="{% url 'search_view' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <label for="file-input">Choose or Drag and Drop Image</label>
         <input type="file" id="file-input" name="image" accept="image/*" required>
@@ -112,9 +112,21 @@
 
             if (files.length > 0) {
                 fileInput.files = files;
+                submitForm();
             }
+        }
+
+        // Listen for the change event on the file input
+        document.getElementById('file-input').addEventListener('change', function () {
+            submitForm();
+        });
+
+        // Function to submit the form
+        function submitForm() {
+            document.getElementById('imageForm').submit();
         }
     </script>
 </body>
+
 
 </html>
