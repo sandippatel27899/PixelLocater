@@ -16,6 +16,7 @@ import os
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 
 # Media files
 MEDIA_URL = '/media/'
@@ -30,7 +31,7 @@ SECRET_KEY = 'django-insecure-pzxi1q(0ha7728)3b_t!5q=(c3d_4v@6m7hb@gf%a6tuyvou0u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["65.2.4.255", "spinfoonline.com"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
