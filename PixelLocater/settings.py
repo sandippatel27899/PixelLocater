@@ -28,9 +28,9 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 SECRET_KEY = 'django-insecure-pzxi1q(0ha7728)3b_t!5q=(c3d_4v@6m7hb@gf%a6tuyvou0u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ["65.2.4.255", "spinfoonline.com"]
 
 
 # Application definition
