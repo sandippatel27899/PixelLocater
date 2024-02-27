@@ -80,7 +80,7 @@
 
     <form id="imageForm" action="{% url 'search_view' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
-        <label for="file-input">Choose or Drag and Drop Image</label>
+        <label for="file-input">Choose from files</label>
         <input type="file" id="file-input" name="image" accept="image/*" required>
 
         <div id="drop-area" ondragover="handleDragOver(event)" ondragleave="handleDragLeave(event)"
@@ -88,7 +88,12 @@
             <p>Or drag and drop here</p>
         </div>
 
-        <button type="submit">Search</button>
+        <button type="submit" name="action" value="search">Search</button>
+        <button type="submit" name="action" value="add_to_database">Add to Database</button>
+        {% if success_message %}
+            <p>{{ success_message }}</p>
+        {% endif %}
+
     </form>
 
     <a href="{% url 'auth_logout' %}" class="logout-btn">Logout</a>
@@ -112,19 +117,9 @@
 
             if (files.length > 0) {
                 fileInput.files = files;
-                submitForm();
             }
         }
 
-        // Listen for the change event on the file input
-        document.getElementById('file-input').addEventListener('change', function () {
-            submitForm();
-        });
-
-        // Function to submit the form
-        function submitForm() {
-            document.getElementById('imageForm').submit();
-        }
     </script>
 </body>
 

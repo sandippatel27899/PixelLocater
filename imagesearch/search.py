@@ -6,6 +6,7 @@ from tensorflow.keras.preprocessing import image
 import numpy as np
 from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
 from sklearn.metrics.pairwise import cosine_similarity
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 
 base_model = VGG16(weights='imagenet', include_top=False)
@@ -44,5 +45,36 @@ def search_similar_images(user_name, input_image_path, top_k: int = 200):
         print(traceback.format_exc())
 
     return result_images
+
+def add_features(user_name, image_path, filename):
+        
+    datagen = ImageDataGenerator(rotation_range=20, zoom_range=0.2, preprocessing_function=preprocess_input)
+
+    
+    img = image.load_img(image_path, target_size=(224, 224))
+    x = image.img_to_array(img)
+    x = np.expand_dims(x, axis=0)
+
+    # Apply data augmentation (rotation and zoom)
+    augmented_images = []
+    for batch in datagen.flow(x, batch_size=1):
+        augmented_images.append(batch.reshape(224, 224, 3))
+        if len(augmented_images) == 7:
+            break
+
+    # Extract features from each augmented image
+    aggregated_features = np.zeros((1, 7, 7, 512))
+    for augmented_img in augmented_images:
+        features = base_model.predict(np.expand_dims(augmented_img, axis=0))
+        aggregated_features += features
+
+    aggregated_features /= len(augmented_images)
+    
+    with open(f"features/{user_name}/features.pkl", 'rb') as f: 
+        features_dict = pickle.load(f)    
+    features_dict[filename] = aggregated_features.flatten()
+    
+    with open(f"features/{user_name}/features.pkl", 'wb') as f: 
+        pickle.dump(features_dict, f)
 
 

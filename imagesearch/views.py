@@ -6,7 +6,7 @@ from django.contrib.auth.decorators import login_required
 from django.conf import settings
 import os
 import base64
-from .search import search_similar_images
+from .search import search_similar_images, add_features
         
 @login_required(login_url="/auth")
 def index(request):    
@@ -20,34 +20,59 @@ def home(request):
 def logout_user(request):
     logout(request)
     return redirect("/")
-
+            
 
 def search_view(request):
     if request.method == 'POST':
-        uploaded_image = request.FILES.get('image')
+        action = request.POST['action']
+        if action == 'search':
+            uploaded_image = request.FILES.get('image')
 
-        uploaded_image_path = os.path.join(settings.MEDIA_ROOT, uploaded_image.name)
-        with open(uploaded_image_path, 'wb') as destination:
-            for chunk in uploaded_image.chunks():
-                destination.write(chunk)
+            uploaded_image_path = os.path.join(settings.MEDIA_ROOT, uploaded_image.name)
+            with open(uploaded_image_path, 'wb') as destination:
+                for chunk in uploaded_image.chunks():
+                    destination.write(chunk)
 
-        with open(uploaded_image_path, "rb") as image_file:
-            base64_uploaded_image = base64.b64encode(image_file.read()).decode("utf-8")
+            with open(uploaded_image_path, "rb") as image_file:
+                base64_uploaded_image = base64.b64encode(image_file.read()).decode("utf-8")
+                
+            # image_urls = [
+            #     (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'),
+            #     ] 
             
-        # image_urls = [
-        #     (f"/media/images/user_{request.user}/image_1.jpeg", 'image_1'),
-        #     ] 
+            image_urls = search_similar_images(request.user, uploaded_image_path)
+            try:
+                os.remove(uploaded_image_path)
+            except:
+                print("failed to remove image here ... ", uploaded_image_path)
+                pass
+            
+            context = {
+                'uploaded_image': f"data:image/png;base64,{base64_uploaded_image}",
+                'image_urls': image_urls,
+                "user": request.user
+            }
+            return render(request, "imagesearch/search_results.html", context) 
         
-        image_urls = search_similar_images(request.user, uploaded_image_path)
-        os.remove(uploaded_image_path)
-        
-        context = {
-            'uploaded_image': f"data:image/png;base64,{base64_uploaded_image}",
-            'image_urls': image_urls,
-            "user": request.user
-        }
+        elif action == 'add_to_database':
+            try:
+                uploaded_image = request.FILES.get('image')
+                user_name = request.user
+                uploaded_image_path = os.path.join(settings.MEDIA_ROOT, f"images/user_{user_name}", uploaded_image.name)
+                with open(uploaded_image_path, 'wb') as destination:
+                    for chunk in uploaded_image.chunks():
+                        destination.write(chunk)
+                        
+                add_features(user_name, uploaded_image_path, uploaded_image.name)
+                context = {'success_message': 'Insert Successful', 'status': 'success'}
+            except:
+                print("failed to add image to dataset for user ", request.user)
+                context = {'success_message': 'Insert Failed', 'status': 'failure'}
 
-    return render(request, "imagesearch/search_results.html", context)  
+            
+            return render(request, "imagesearch/index.html", context) 
+
+    return render(request, "imagesearch/search_results.html")  
 
 class LoginView(FormView):
     template_name = "user/login.html"
