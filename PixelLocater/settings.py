@@ -31,7 +31,7 @@ SECRET_KEY = 'django-insecure-pzxi1q(0ha7728)3b_t!5q=(c3d_4v@6m7hb@gf%a6tuyvou0u
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ["*"]
+ALLOWED_HOSTS = ['*', 'spinfoonline.com', 'www.spinfoonline.com']
 
 
 # Application definition
@@ -128,3 +128,6 @@ STATIC_URL = 'static/'
 # https://docs.djangoproject.com/en/4.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+CSRF_COOKIE_SECURE = True
+CSRF_COOKIE_DOMAIN = '.spinfoonline.com'
