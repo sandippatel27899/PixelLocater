@@ -29,7 +29,7 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 SECRET_KEY = 'django-insecure-pzxi1q(0ha7728)3b_t!5q=(c3d_4v@6m7hb@gf%a6tuyvou0u'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['*', 'spinfoonline.com', 'www.spinfoonline.com']
 
@@ -130,4 +130,10 @@ STATIC_URL = 'static/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 CSRF_COOKIE_SECURE = True
-CSRF_COOKIE_DOMAIN = '.spinfoonline.com'
+SECURE_REFERRER_POLICY = 'same-origin'
+CSRF_COOKIE_DOMAIN = 'spinfoonline.com'
+SESSION_COOKIE_SECURE = True
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+CSRF_HEADER_NAME = 'HTTP_REFERER'
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

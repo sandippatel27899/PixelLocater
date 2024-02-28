@@ -12,7 +12,7 @@ from tensorflow.keras.preprocessing.image import ImageDataGenerator
 base_model = VGG16(weights='imagenet', include_top=False)
 
 
-def search_similar_images(user_name, input_image_path, top_k: int = 200):
+def search_similar_images(user_name, input_image_path, top_k: int = 100):
     result_images = []
     
     try:
