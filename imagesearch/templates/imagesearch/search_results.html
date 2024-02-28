@@ -157,7 +157,7 @@
             {% for image_url, file_name in image_urls %}
                 <div class="single-image-container">
                     <div class="result-image">
-                        <img src="{{ image_url }}" onerror="showSamplePreview(this)" alt="Result Image">
+                        <img src="{{ image_url }}" loading="lazy" onerror="showSamplePreview(this)" alt="Result Image">
                     </div>
                     <div class="image-caption">{{ file_name }}</div>
                 </div>
