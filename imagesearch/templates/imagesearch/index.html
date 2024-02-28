@@ -7,12 +7,19 @@
     <title>Pixel Locator</title>
 
     <style>
+        html {
+            width: 100%;
+            height: 100%;
+        }
+
         body {
             font-family: Arial, sans-serif;
             background-color: #f4f4f4;
             margin: 0;
             padding: 0;
-            text-align: center;
+            text-align: end;
+            width: 100%;
+            height: 100%;
         }
 
         h1 {
@@ -33,7 +40,8 @@
         }
 
         label {
-            display: block;
+            display: flex;
+            justify-content: center;
             background-color: #4CAF50;
             color: #fff;
             padding: 10px;
@@ -60,24 +68,64 @@
         }
 
         .logout-btn {
-            display: inline-block;
             padding: 10px 20px;
-            background-color: #4CAF50;
+            background-color: #3434eb;
             color: #fff;
             text-decoration: none;
             border-radius: 5px;
             margin-top: 20px;
+            position: fixed;
+            margin: 10px;
+            right: 0;
         }
 
         .logout-btn:hover {
-            background-color: #45a049;
+            background-color: #10109c;
+        }
+
+        .actions-wrapper {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+
+        .search_button,.add_to_database_button {
+            cursor: pointer;
+            background-color: #3434eb;
+            padding: 10px 20px;
+            color: #fff;
+            text-decoration: none;
+            display: inline-block;
+            border: none;
+        }
+
+        .search_button:hover, .add_to_database_button:hover{
+            background-color: #10109c;
+        }
+
+        .image-search-form-wrapper {
+            display: flex;
+            width: 100%;
+            height: 100%;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .form-wrapper {
+            width: 50%;
         }
     </style>
 </head>
 
 <body>
-    <h1> Image search </h1>
+    <a href="{% url 'auth_logout' %}" class="logout-btn">Logout</a>
+    <div class="image-search-form-wrapper">
+        <div>
+            <h1> Image search </h1>
+        </div>
 
+    <div class="form-wrapper">
     <form id="imageForm" action="{% url 'search_view' %}" method="post" enctype="multipart/form-data">
         {% csrf_token %}
         <label for="file-input">Choose from files</label>
@@ -88,15 +136,18 @@
             <p>Or drag and drop here</p>
         </div>
 
-        <button type="submit" name="action" value="search">Search</button>
-        <button type="submit" name="action" value="add_to_database">Add to Database</button>
+        <div class="actions-wrapper">
+            <button class="search_button" type="submit" name="action" value="search">Search</button>
+            <button class="add_to_database_button" type="submit" name="action" value="add_to_database">Add to Database</button>
+        </div>
+        
         {% if success_message %}
             <p>{{ success_message }}</p>
         {% endif %}
 
     </form>
-
-    <a href="{% url 'auth_logout' %}" class="logout-btn">Logout</a>
+</div>
+</div>
 
     <script>
         function handleDragOver(event) {

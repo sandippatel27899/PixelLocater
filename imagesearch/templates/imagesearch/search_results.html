@@ -54,12 +54,6 @@
             transform: scale(1.05);
         }
 
-        .image-caption {
-            margin-top: 5px;
-            font-size: 14px;
-            color: #666;
-        }
-
         .center-image img,
         .image-container img {
             width: 100%;
@@ -73,7 +67,6 @@
         .center-image,
         .image-container {
             display: flex;
-            justify-content: center;
             align-items: center;
             margin: 20px;
         }
@@ -88,12 +81,6 @@
             transform: scale(1.05);
         }
 
-        .image-caption {
-            margin-top: 5px;
-            font-size: 14px;
-            color: #666;
-        }
-
         /* Add this style for a fixed height-width square box */
         .center-image img,
         .image-container img {
@@ -102,15 +89,15 @@
         }
 
         .image-container {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 10px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 18px;
             margin: 20px;
-            justify-content: center; /* Center the grid items horizontally */
+            justify-content: center;
         }
         
         .image-container img {
-            width: 100%;
+            width: 200px;
             height: auto;
             border-radius: 8px;
             box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -128,11 +115,26 @@
             font-size: 14px;
             color: #666;
         }
+
+        .result-image img, .center-image img {
+            border: 2px solid gray;
+        }
+
+        .single-image-container {
+            height: 280px;
+            width: 200px;
+            display: flex;
+            flex-direction: column;
+        }
         
         /* Adjust the number of columns for the first row */
-        @media (min-width: 768px) {
+        @media (max-width: 768px) {
             .image-container {
                 grid-template-columns: repeat(8, 1fr); /* Display 8 images in the first row on larger screens */
+            }
+
+            .single-image-container {
+                height: 260px;
             }
         }
         
@@ -153,9 +155,11 @@
     {% if image_urls %}
         <div class="image-container">
             {% for image_url, file_name in image_urls %}
-                <div>
-                    <img src="{{ image_url }}" onerror="showSamplePreview(this)" alt="Result Image">
-                    <p class="image-caption">{{ file_name }}</p>
+                <div class="single-image-container">
+                    <div class="result-image">
+                        <img src="{{ image_url }}" onerror="showSamplePreview(this)" alt="Result Image">
+                    </div>
+                    <div class="image-caption">{{ file_name }}</div>
                 </div>
             {% endfor %}
         </div>
