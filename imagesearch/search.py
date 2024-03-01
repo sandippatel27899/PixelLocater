@@ -43,6 +43,11 @@ def search_similar_images(user_name, input_image_path, top_k: int = 100):
     except Exception as e:
         print("Failure for ", user_name)
         print(traceback.format_exc())
+        
+    try:
+        del features_dict
+    except:
+        pass
 
     return result_images
 
@@ -76,5 +81,10 @@ def add_features(user_name, image_path, filename):
     
     with open(f"features/{user_name}/features.pkl", 'wb') as f: 
         pickle.dump(features_dict, f)
+        
+    try:
+        del features_dict
+    except:
+        pass
 
 
