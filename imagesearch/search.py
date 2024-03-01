@@ -1,6 +1,7 @@
 import os
 import pickle
 import base64
+import gc
 import traceback
 from tensorflow.keras.preprocessing import image
 import numpy as np
@@ -46,7 +47,9 @@ def search_similar_images(user_name, input_image_path, top_k: int = 100):
         
     try:
         del features_dict
+        gc.collect()
     except:
+        print("error while releasing resources ...")
         pass
 
     return result_images
@@ -84,7 +87,9 @@ def add_features(user_name, image_path, filename):
         
     try:
         del features_dict
+        gc.collect()
     except:
+        print("error while releasing resources ....")
         pass
 
 
