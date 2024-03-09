@@ -7,10 +7,10 @@ from django.conf import settings
 import os
 import base64
 from .search import search_similar_images, add_features
-        
+from time import time
+
 @login_required(login_url="/auth")
 def index(request):    
-    print(request.user)
     return render(request, "imagesearch/index.html")
 
 
@@ -18,11 +18,14 @@ def home(request):
     return render(request, "imagesearch/home_page.html")
 
 def logout_user(request):
+    print(f"User {request.user} logged out successfully")
     logout(request)
     return redirect("/")
             
 
 def search_view(request):
+    start_time = time()
+    print(f"incoming request for action {request.POST['action']}, user: {request.user}")
     if request.method == 'POST':
         action = request.POST['action']
         if action == 'search':
@@ -52,6 +55,7 @@ def search_view(request):
                 'image_urls': image_urls,
                 "user": request.user
             }
+            print(f"return with rendering search result. user {request.user}, time taken {start_time - time()}")
             return render(request, "imagesearch/search_results.html", context) 
         
         elif action == 'add_to_database':
@@ -69,9 +73,11 @@ def search_view(request):
                 print("failed to add image to dataset for user ", request.user)
                 context = {'success_message': 'Insert Failed', 'status': 'failure'}
 
-            
+            print(f"inserted to db. user {request.user}, time taken {start_time - time()}")
             return render(request, "imagesearch/index.html", context) 
-
+        
+        
+    print(f"it should not be logged. user {request.user}, time taken {start_time - time()}")
     return render(request, "imagesearch/search_results.html")  
 
 class LoginView(FormView):
@@ -87,8 +93,10 @@ class LoginView(FormView):
         
         if user is not None:
             login(self.request, user)
+            print(f"User logged in successfully {username}")
             return super().form_valid(form)
         else:
+            print(f"Invalid user submission request. username {username}, password {password}")
             return self.form_invalid(form)
         
     
