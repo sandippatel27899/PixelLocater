@@ -8,29 +8,56 @@ import numpy as np
 from tensorflow.keras.applications.vgg16 import VGG16, preprocess_input
 from sklearn.metrics.pairwise import cosine_similarity
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.applications.resnet50 import preprocess_input
 
 
 base_model = VGG16(weights='imagenet', include_top=False)
 
 
+def extract_search_features(img_path):
+    # Load and resize image
+    img = image.load_img(img_path, target_size=(224, 224))
+    img_array = image.img_to_array(img)
+    img_array = np.expand_dims(img_array, axis=0)
+    img_array = preprocess_input(img_array)
+
+    # Use ResNet50 with average pooling to get 2048-dimensional features
+    model = ResNet50(weights='imagenet', include_top=False, pooling='avg')
+    features = model.predict(img_array)
+    
+    return features.flatten()
+
 def search_similar_images(user_name, input_image_path, top_k: int = 100):
     result_images = []
     
     try:
-        with open(f"features/{user_name}/features.pkl", 'rb') as f: 
+        path = f"features/{user_name}/features.pkl"
+        path = "/Users/sandippatel/SPINFO/PixelLocater/features/hiren/features.pkl"
+        with open(path, 'rb') as f: 
             features_dict = pickle.load(f)
         
+        # Load and preprocess the query image
         query_img = image.load_img(input_image_path, target_size=(224, 224))
         query_img_array = image.img_to_array(query_img)
         query_img_array = np.expand_dims(query_img_array, axis=0)
         query_img_array = preprocess_input(query_img_array)
 
-        query_features = base_model.predict(query_img_array).flatten()
+        # Extract features from the query image using ResNet50
+        query_features = extract_search_features(input_image_path)
 
         similarities = {}
         for filename, features in features_dict.items():
-            similarities[filename] = cosine_similarity([query_features], [features])[0][0]
+            try:
+                similarities[filename] = cosine_similarity([query_features], [features])[0][0]
+            except Exception as e:
+                print("failed for ..", filename, e)
 
+        # Ensure query_features shape is (2048,) to match the database features
+        if query_features.shape != (2048,):
+            print(f"Query features shape is {query_features.shape}, but expected (2048,).")
+
+        # Sort images by similarity and select top_k
         sorted_images = sorted(similarities.items(), key=lambda x: x[1], reverse=True)[:top_k]
         
         for record in sorted_images:
@@ -91,5 +118,17 @@ def add_features(user_name, image_path, filename):
     except:
         print("error while releasing resources ....")
         pass
+
+def search_similar_images_old(query_features, feature_list, n=5):
+    # Ensure both query and database features have same dimensions
+    distances = []
+    for idx, features in enumerate(feature_list):
+        if features is not None and features.shape == query_features.shape:
+            dist = np.linalg.norm(features - query_features)
+            distances.append((idx, dist))
+    
+    # Sort by distance and return top N matches
+    distances.sort(key=lambda x: x[1])
+    return distances[:n]
 
 
